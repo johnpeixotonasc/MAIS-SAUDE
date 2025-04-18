@@ -1,0 +1,46 @@
+# FLUTTER
+build/
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.idea/
+*.iml
+*.lock
+
+# PYTHON
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.log
+*.sqlite3
+*.db
+*.env
+.env.*
+env/
+venv/
+ENV/
+VENV/
+
+# VS CODE
+.vscode/
+
+# SISTEMAS
+.DS_Store
+Thumbs.db
+
+# TESTES & TEMPORÁRIOS
+coverage/
+htmlcov/
+*.tmp
+*.swp
+*.bak
+
+# FIREBASE (caso use arquivos sensíveis)
+firebase-debug.log
+*.secret.json
+*.key.json
