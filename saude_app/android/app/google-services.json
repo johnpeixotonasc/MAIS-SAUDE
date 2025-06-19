@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "512359885873",
+    "project_id": "saude-app-37a56",
+    "storage_bucket": "saude-app-37a56.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512359885873:android:53a3ce102cab150d9bb910",
+        "android_client_info": {
+          "package_name": "com.projeto.saudeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9S4W36uscV14JA8O4I9CCBH5bWCHdf-4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
