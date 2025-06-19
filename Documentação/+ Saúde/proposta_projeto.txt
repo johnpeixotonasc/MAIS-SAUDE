@@ -1,0 +1,772 @@
+UNIVERSIDADE EVANGÉLICA DE GOIÁS
+CURSO ANÁLISE DE DESENVOLVIMENTO DE SISTEMAS
+
+PLANEJAMENTO DO PROJETO DE EXTENSÃO
+JOHN PEIXOTO DO NASCIMENTO
+
+ANÁPOLIS
+2025
+
+2
+
+JOHN PEIXOTO DO NASCIMENTO
+
+RELATÓRIO DE ATIVIDADES: + SAÚDE
+
+Relatório
+
+Final
+
+apresentado
+
+para
+
+avaliação da atividade de Extensão da
+Universidade
+
+Evangélica
+
+de
+
+Goiás,
+
+UniEVANGÉLICA, sob a orientação do(a)
+prof.: Natasha Sophie Pereira
+
+ANÁPOLIS
+2025
+
+3
+
+RESUMO
+
+O presente projeto de extensão propõe o desenvolvimento de um aplicativo móvel
+voltado à inclusão digital e à promoção da saúde da população idosa. A proposta visa
+oferecer uma plataforma acessível, intuitiva e funcional, permitindo que os usuários
+realizem o controle de medicações, o acompanhamento de consultas e exames, o
+registro diário de sintomas e parâmetros de saúde, bem como o acionamento de
+emergências e a integração com familiares. O aplicativo contará com funcionalidades
+como lembretes personalizados de medicamentos, agenda de compromissos
+médicos, diário de saúde com anotações e registros fisiológicos, botão de emergência
+com envio de localização, e uma seção educativa com vídeos e explicações de termos
+médicos. Além disso, será possível permitir o acesso de familiares ou cuidadores para
+acompanhamento remoto, promovendo uma rede de apoio contínua. O projeto
+também se destaca pelo foco em acessibilidade, incorporando elementos como
+botões com tamanho ampliado, leitura por voz e interface de alto contraste. A
+tecnologia utilizada será baseada em Flutter para o desenvolvimento do frontend com
+foco na plataforma Android, e Firebase para autenticação, banco de dados e envio de
+notificações e Python para backend. Espera-se, com esta iniciativa, contribuir para a
+autonomia da pessoa idosa, fortalecendo vínculos sociais e ampliando o acesso aos
+cuidados em saúde por meio da tecnologia.
+
+Palavras-chave: Inclusão digital. Saúde do idoso. Aplicativo móvel. Acessibilidade.
+Extensão universitária.
+
+4
+
+SUMÁRIO
+
+Sumário
+1.
+
+Introdução ................................................................................................ 5
+
+2.
+
+Objetivos .................................................................................................. 5
+
+3.
+
+Público-alvo ............................................................................................. 6
+3.1.
+
+Metodologia prevista ......................................................................... 7
+
+3.2.
+
+Etapas e cronograma de execução ................................................... 8
+
+3.3.
+
+RESULTADOS ESPERADOS:.......................................................... 9
+
+3.4.
+
+Estratégia de Divulgação ................................................................ 10
+
+3.5.
+
+Aplicação Final do Projeto............................................................... 10
+
+3.6.
+
+Plataforma Digital Utilizada ............................................................. 11
+
+3.7.
+
+Recursos Necessários para a Interação com o Público .................. 11
+
+3.8.
+
+Acessibilidade da Ação para os Participantes................................. 12
+
+3.9.
+
+Objetivo da Ação ............................................................................. 12
+
+3.10. Etapas do Projeto e Prazos de Execução ...................................... 12
+3.11. Responsáveis por Cada Atividade ................................................. 13
+3.12. Parcerias Estratégicas .................................................................... 13
+3.13. Estratégias de Abordagem para Engajar o Público-Alvo ................ 15
+3.14. Possíveis Desafios e Soluções Previstas ....................................... 15
+Referências .................................................................................................. 16
+
+5
+
+1. INTRODUÇÃO
+
+O envelhecimento da população é uma realidade global e crescente, especialmente
+no Brasil, onde o número de pessoas com 60 anos ou mais tem aumentado
+significativamente nas últimas décadas. De acordo com dados do Instituto Brasileiro
+de Geografia e Estatística (IBGE), a expectativa é que, até 2030, o número de idosos
+ultrapasse o de crianças e adolescentes no país. Diante dessa transformação
+demográfica, tornam-se urgentes políticas públicas, ações sociais e soluções
+tecnológicas que promovam a qualidade de vida, a autonomia e o bem-estar dessa
+parcela da população.
+
+Entretanto, a exclusão digital ainda é um desafio relevante entre os idosos,
+dificultando o acesso a informações, serviços de saúde e canais de comunicação com
+familiares e profissionais da área. Ao mesmo tempo, a saúde do idoso demanda um
+acompanhamento contínuo, especialmente no que diz respeito à administração de
+medicamentos, realização de exames periódicos e observação de sintomas.
+
+Neste contexto, o presente projeto de extensão propõe o desenvolvimento de um
+aplicativo de saúde integrado, voltado especificamente para pessoas idosas, com foco
+na inclusão digital e na promoção do autocuidado. A proposta busca oferecer uma
+ferramenta acessível, com linguagem simples e interface amigável, que possibilite o
+registro de informações de saúde, envio de alertas, integração com familiares e apoio
+em situações de emergência. A relevância do projeto está em aliar tecnologia, cuidado
+e inclusão, contribuindo para a construção de uma sociedade mais acolhedora,
+preparada e conectada às necessidades do envelhecimento.
+
+2. OBJETIVOS
+O projeto de extensão “+ SAÚDE” tem como objetivo geral o desenvolvimento de uma
+solução tecnológica acessível que promova a inclusão digital e o cuidado com a saúde
+da pessoa idosa, por meio de um aplicativo móvel funcional, intuitivo e adaptado às
+suas necessidades.
+
+6
+
+Entre os objetivos específicos, destacam-se:
+●
+
+Facilitar o controle e a administração de medicamentos, por meio de lembretes
+personalizados e registro de histórico de uso;
+
+●
+
+Oferecer uma agenda digital de consultas e exames, com sistema de
+notificações e possibilidade de armazenamento de receitas e pedidos médicos;
+
+●
+
+Estimular o autocuidado e o monitoramento da saúde, através de um diário
+para anotação de sintomas, registro de pressão arterial, glicemia, batimentos
+cardíacos e peso corporal;
+
+●
+
+Disponibilizar um botão de emergência, que permita o envio da localização em
+tempo real e o contato direto com pessoas de confiança;
+
+●
+
+Criar um canal de educação em saúde, com vídeos explicativos e tutoriais
+sobre temas médicos em linguagem simples e acessível;
+
+●
+
+Estabelecer uma interface de acompanhamento familiar, permitindo que
+cuidadores e parentes acompanhem remotamente o uso do aplicativo e sejam
+notificados em casos de emergência ou esquecimento de medicação;
+
+●
+
+Garantir acessibilidade digital, com elementos de design adaptados à terceira
+idade, como botões ampliados, leitura por voz e contraste elevado.
+
+Com essas ações, pretende-se promover a autonomia da pessoa idosa, fortalecer
+vínculos sociais e familiares, e contribuir para uma cultura de cuidado mais
+humanizada, inclusiva e conectada com os desafios contemporâneos do
+envelhecimento.
+3. PÚBLICO-ALVO
+O público-alvo do projeto + SAÚDE é composto, prioritariamente, por pessoas idosas
+que possuem acesso a dispositivos móveis, especialmente smartphones com sistema
+operacional Android. Este grupo representa uma parcela significativa da população
+brasileira que, apesar do crescente acesso à tecnologia, ainda enfrenta dificuldades
+no uso pleno de recursos digitais, especialmente no que tange a serviços de saúde e
+comunicação online.
+Além dos idosos, o projeto também contempla como público secundário os familiares,
+cuidadores informais e profissionais da saúde que atuam diretamente no suporte a
+
+7
+
+essa população. A proposta é que esses usuários possam utilizar o aplicativo como
+ferramenta de acompanhamento remoto, auxílio em emergências e fortalecimento do
+vínculo com os idosos, promovendo maior segurança e monitoramento no cotidiano.
+A escolha deste público se justifica pela necessidade urgente de inclusão digital e de
+promoção da saúde entre pessoas idosas, bem como pela carência de aplicativos
+acessíveis, específicos e intuitivos que respondam às demandas reais desse grupo.
+Ao ampliar o acesso à informação, ao cuidado e à comunicação, o projeto busca
+contribuir com a autonomia, o bem-estar e a qualidade de vida dos usuários,
+alinhando-se aos princípios do envelhecimento ativo e da dignidade na terceira idade.
+3.1.
+
+METODOLOGIA PREVISTA
+
+A execução do projeto + SAÚDE será realizada em etapas sequenciais, contemplando
+o planejamento, o desenvolvimento, os testes de usabilidade, a validação com
+usuários e a posterior divulgação da solução. A metodologia adotada terá caráter
+participativo e multidisciplinar, fundamentada em uma abordagem centrada no
+usuário, com ênfase na escuta das necessidades reais da população idosa e de seus
+cuidadores.
+Inicialmente, será conduzido um levantamento de demandas por meio de entrevistas
+e questionários com idosos e cuidadores, com o objetivo de identificar dificuldades no
+uso de tecnologias digitais, rotinas de cuidado em saúde e expectativas em relação à
+ferramenta proposta. Com base nesse diagnóstico, serão definidas as funcionalidades
+prioritárias do aplicativo.
+O desenvolvimento ocorrerá de forma incremental, utilizando ciclos curtos (sprints),
+permitindo a implementação gradual das funcionalidades e a realização de testes
+contínuos, com ajustes baseados nos feedbacks dos usuários. A interface será
+projetada com foco em acessibilidade, incluindo elementos como botões ampliados,
+leitura por voz, contraste elevado e linguagem simplificada.
+Serão realizados testes de usabilidade com grupos de idosos voluntários, a fim de
+identificar melhorias na navegação e na interação com o sistema. Também será
+implementada uma funcionalidade de integração com familiares e profissionais da
+saúde, visando promover uma rede de apoio e acompanhamento remoto.
+
+8
+
+Após a conclusão do desenvolvimento, serão oferecidas oficinas de capacitação para
+idosos e cuidadores, em formato presencial e remoto, com o objetivo de orientar o uso
+do aplicativo e estimular a autonomia digital. Por fim, será aplicada uma avaliação de
+impacto, por meio de instrumentos de coleta de dados, a fim de mensurar a efetividade
+da ferramenta no cotidiano dos usuários.
+3.2.
+
+ETAPAS E CRONOGRAMA DE EXECUÇÃO
+
+Etapa
+
+Descrição
+
+Responsável
+
+e Nesta etapa inicial, serão
+de coletadas as informações,
+necessidades e dificuldades
+encontradas pela população
+idosa ao utilizar um aplicativo
+mobile para dessa forma
+projetar uma solução mais
+acolhedora e didática ao
+público alvo.
+Desenvolvimento
+Com base nos dados obtidos,
+da versão inicial do será
+iniciado
+o
+aplicativo
+desenvolvimento da primeira
+versão
+do
+aplicativo,
+contemplando funcionalidades
+básicas, como lembretes de
+medicação,
+agenda
+de
+consultas e diário de saúde.
+Testes
+de Será conduzida a primeira
+usabilidade
+rodada de testes com um
+grupo piloto de usuários
+idosos. A finalidade será
+observar a interação com a
+interface, coletar sugestões e
+identificar
+dificuldades,
+permitindo
+correções
+preliminares.
+Desenvolvimento
+Serão
+implementadas
+as
+das
+funcionalidades
+funcionalidades
+complementares, como botão
+avançadas
+de
+emergência
+com
+geolocalização,
+integração
+com perfis de familiares,
+vídeos educativos e recursos
+de acessibilidade (leitura por
+voz, alto contraste, ampliação
+de elementos visuais).
+
+John
+do
+Nascimento
+
+Planejamento
+levantamento
+dados
+
+Data
+Prevista
+Peixoto [30/04/2025]
+
+John Peixoto [15/06/2025]
+do
+Nascimento
+
+John Peixoto [30/07/2025]
+do
+Nascimento
+
+John Peixoto [30/08/2025]
+do
+Nascimento
+
+9
+
+Testes
+usabilidade
+
+de Nova fase de testes será
+realizada com a versão quase
+final do aplicativo, abrangendo
+usuários idosos e familiares.
+Serão avaliados aspectos de
+compreensão, acessibilidade,
+desempenho e efetividade das
+funcionalidades.
+Avaliação final e Na etapa final, serão aplicados
+entrega
+do instrumentos avaliativos junto
+relatório
+aos usuários, a fim de
+mensurar a efetividade do
+aplicativo. Os dados obtidos
+subsidiarão a elaboração do
+relatório técnico e acadêmico,
+que
+será
+entregue
+à
+coordenação de extensão e
+demais interessados.
+3.3.
+
+John Peixoto [30/10/2025]
+do
+Nascimento
+
+John Peixoto [01/12/2025]
+do
+Nascimento
+
+RESULTADOS ESPERADOS:
+
+O desenvolvimento do projeto + SAÚDE tem o potencial de gerar impactos
+significativos na promoção da inclusão digital e no fortalecimento do cuidado com a
+saúde da população idosa. A proposta busca contribuir diretamente para a melhoria
+da qualidade de vida desse grupo social, ao oferecer uma ferramenta tecnológica
+acessível, funcional e adaptada às suas necessidades cotidianas.
+Entre os principais impactos previstos, destaca-se o incentivo à autonomia dos idosos
+na gestão da própria saúde, por meio do controle de medicações, registro de sinais
+vitais e organização de consultas médicas. Espera-se que, com o uso do aplicativo,
+haja uma redução na ocorrência de esquecimentos de medicamentos, atrasos em
+atendimentos e dificuldades de comunicação com familiares ou cuidadores.
+Outro aspecto relevante é o fortalecimento dos laços familiares e comunitários,
+possibilitado pela funcionalidade de conexão remota entre o idoso e seus contatos de
+confiança. Essa interação favorece o acompanhamento contínuo do bem-estar da
+pessoa idosa, mesmo à distância, promovendo maior segurança, atenção e suporte
+emocional.
+O projeto também se propõe a contribuir com a educação em saúde, ao disponibilizar
+conteúdos simples, didáticos e acessíveis sobre autocuidado, termos médicos e
+
+10
+
+orientações
+
+básicas.
+
+Essa
+
+iniciativa
+
+pode
+
+ampliar
+
+o
+
+entendimento
+
+sobre
+
+procedimentos de saúde, prevenções e uso adequado de medicamentos, promovendo
+o empoderamento dos usuários frente às próprias condições de saúde.
+Além dos impactos diretos sobre os idosos, o projeto poderá beneficiar familiares,
+cuidadores e profissionais da saúde, oferecendo uma solução digital que favorece a
+organização e o monitoramento do cuidado. Dessa forma, a iniciativa atende aos
+princípios do envelhecimento ativo, da inclusão digital e da promoção da saúde
+pública.
+Por fim, o projeto contribui para o fortalecimento da extensão universitária, ao articular
+ensino, pesquisa e responsabilidade social, conectando o conhecimento acadêmico
+às demandas reais da sociedade.
+3.4.
+
+ESTRATÉGIA DE DIVULGAÇÃO
+
+O projeto será divulgado integralmente por meio de anúncios digitais, priorizando
+plataformas online de grande alcance e visibilidade, como redes sociais (Facebook,
+Instagram e WhatsApp) e portais especializados em saúde e tecnologia. Essa
+abordagem visa atingir diretamente o público-alvo, formado principalmente por idosos
+e seus familiares, que hoje apresentam crescente acesso às mídias digitais.
+Os materiais de divulgação incluirão:
+● Banners digitais: Criação de peças gráficas adaptáveis a diferentes
+plataformas.
+● Posts e vídeos promocionais: Conteúdos educativos e de apresentação do
+aplicativo, com linguagem acessível e foco em usabilidade.
+● Anúncios pagos: Impulsionamento de publicações em redes sociais para
+maximizar o alcance da campanha.
+
+3.5.
+
+APLICAÇÃO FINAL DO PROJETO
+
+A aplicação do projeto será exclusivamente por meios digitais. O aplicativo "+ SAÚDE"
+será disponibilizado para download em plataformas de distribuição de aplicativos,
+
+11
+
+como a Google Play Store, garantindo o acesso remoto dos usuários em qualquer
+localidade.
+Todo o conteúdo do aplicativo será desenvolvido de forma a ser funcional em
+ambientes digitais móveis, proporcionando à população idosa a autonomia para
+acessar informações sobre saúde, agendamentos, medicamentos e emergências,
+sem a necessidade de deslocamento físico.
+Essa estratégia reforça o compromisso com a inclusão digital e a promoção do
+autocuidado na terceira idade, alinhando o projeto às tendências tecnológicas
+contemporâneas e às necessidades sociais emergentes.
+3.6.
+
+PLATAFORMA DIGITAL UTILIZADA
+
+● Google Play Store: Para disponibilização e distribuição do aplicativo ao
+público.
+● GitHub: Para desenvolvimento colaborativo e versionamento de código.
+● Visual Studio Code: IDE principal para programação e manutenção do
+projeto.
+
+3.7.
+
+RECURSOS NECESSÁRIOS PARA A INTERAÇÃO COM O PÚBLICO
+
+Para garantir uma interação efetiva com o público-alvo, os seguintes recursos serão
+utilizados:
+1. Canal de comunicação via WhatsApp: Para suporte básico, esclarecimento
+de dúvidas e acompanhamento dos usuários.
+2. Formulários online (Google Forms): Para coleta de feedback sobre a
+experiência dos usuários.
+3. Vídeos tutoriais: Explicações passo a passo sobre o uso do aplicativo, com
+linguagem simples e visual didático.
+
+12
+
+3.8.
+
+ACESSIBILIDADE DA AÇÃO PARA OS PARTICIPANTES
+
+O aplicativo "+ SAÚDE" será desenvolvido respeitando princípios de acessibilidade
+digital, com as seguintes características:
+● Interface de alta usabilidade: Botões grandes, textos com fonte ampliada e
+menus simplificados.
+● Leitura por voz: Função opcional que permitirá a narração dos conteúdos e
+comandos.
+● Alto contraste: Disponibilização de modo visual de alto contraste para
+atender usuários com deficiência visual parcial.
+● Compatibilidade com leitores de tela: Facilitará o uso do aplicativo por
+idosos com deficiência visual grave.
+
+Essas ações têm o objetivo de garantir que todos os usuários, independentemente de
+suas limitações físicas ou cognitivas, possam utilizar a ferramenta de forma autônoma
+e segura.
+3.9.
+
+OBJETIVO DA AÇÃO
+
+Desenvolver, divulgar e disponibilizar o aplicativo digital "+ SAÚDE", voltado à
+promoção da saúde e inclusão digital da população idosa, com ênfase na autonomia,
+acessibilidade e usabilidade.
+3.10. ETAPAS DO PROJETO E PRAZOS DE EXECUÇÃO
+Etapa
+
+Descrição
+
+Prazo
+
+Planejamento
+
+e Definição
+
+Análise
+
+de funcionalidades e fluxos do de 2025
+
+Requisitos
+
+Responsável
+
+das Maio a Junho John
+
+do Nascimento
+
+aplicativo
+
+Desenvolvimento do Criação de layout inicial e Julho de 2025 John
+Protótipo
+
+Peixoto
+
+prototipação de telas
+
+Peixoto
+
+do Nascimento
+
+13
+
+Desenvolvimento do Programação do frontend Agosto
+
+a John
+
+Aplicativo
+
+de do Nascimento
+
+(Flutter)
+
+e
+
+backend Outubro
+
+(Python/Firebase)
+
+Peixoto
+
+2025
+
+Testes
+
+de Teste
+
+funcional
+
+com Novembro de John
+
+Usabilidade
+
+e público-alvo simulado
+
+2025
+
+Peixoto
+
+do Nascimento
+
+Ajustes
+Divulgação
+
+e Publicação na Google Play Final
+
+Lançamento
+
+Store e campanhas digitais
+
+de John
+
+Peixoto
+
+Novembro de do Nascimento
+2025
+
+3.11. RESPONSÁVEIS POR CADA ATIVIDADE
+O responsável por todas as fases de desenvolvimento, testes, divulgação e
+manutenção
+
+do
+
+projeto
+
+será
+
+John
+
+Peixoto
+
+do
+
+Nascimento.
+
+Além disso, em fases de testes e divulgação, buscar-se-á apoio eventual de possíveis
+parceiros estratégicos, como instituições de saúde ou setores públicos.
+3.12.
+
+PARCERIAS ESTRATÉGICAS
+
+Para a efetiva implementação e ampliação do alcance do projeto "+ SAÚDE", é
+fundamental estabelecer parcerias com instituições e profissionais que compartilhem
+dos mesmos valores voltados à promoção da saúde e à inclusão digital da população
+idosa. As parcerias propostas abrangem os setores público, privado, acadêmico e do
+terceiro setor, proporcionando apoio técnico, institucional e estratégico para o
+desenvolvimento do aplicativo.
+Inicialmente, destacam-se como potenciais parceiros as instituições de saúde públicas
+e privadas, tais como hospitais universitários, unidades básicas de saúde (UBS),
+clínicas geriátricas e planos de saúde como Unimed, Amil e Hapvida. Essas
+instituições possuem contato direto com o público-alvo e podem contribuir tanto na
+validação técnica do conteúdo quanto na divulgação do aplicativo entre seus
+pacientes.
+
+14
+
+No âmbito governamental, órgãos como o Ministério da Saúde, Secretarias Municipais
+e Estaduais de Saúde e o Ministério dos Direitos Humanos e da Cidadania constituem
+aliados estratégicos, especialmente por contarem com programas voltados à saúde
+digital, envelhecimento ativo e inclusão tecnológica. Essas instituições podem
+fornecer apoio institucional e, eventualmente, recursos financeiros para expansão do
+projeto.
+Outra vertente importante são as universidades e centros de pesquisa, sobretudo
+aqueles que possuem cursos de Medicina, Enfermagem, Psicologia, Nutrição,
+Educação Física e Tecnologia da Informação. A parceria com instituições de ensino
+superior possibilita a integração do projeto com ações de extensão, pesquisa e
+desenvolvimento, além de fomentar a participação de estudantes bolsistas e
+professores orientadores.
+As empresas de tecnologia também se configuram como parceiras estratégicas,
+especialmente aquelas com histórico de apoio a iniciativas de impacto social.
+Plataformas como Google, Microsoft, Amazon Web Services (AWS) e operadoras de
+telecomunicações como Claro, Vivo e TIM podem contribuir com infraestrutura
+tecnológica, serviços gratuitos, capacitação técnica ou mesmo apoio em campanhas
+de divulgação e acesso à internet para os usuários do aplicativo.
+Por fim, as organizações não governamentais (ONGs) e associações voltadas à
+terceira idade, como a Associação Brasileira de Alzheimer (ABRAz), a Pastoral da
+Pessoa Idosa e centros de convivência para idosos, são fundamentais para fortalecer
+o vínculo com a comunidade. Elas exercem papel relevante na orientação e
+engajamento dos idosos, além de promover o uso do aplicativo em ambientes
+acolhedores e já familiares ao público-alvo.
+Além dessas parcerias institucionais, o projeto contará com a contribuição de
+profissionais autônomos especializados em saúde da terceira idade. Geriatras,
+psicólogos, fisioterapeutas e nutricionistas poderão atuar na elaboração de conteúdos
+educativos, enquanto desenvolvedores e designers poderão oferecer suporte técnico
+voluntário, principalmente nas fases de testes e ajustes da plataforma.
+Dessa forma, o estabelecimento dessas parcerias visa assegurar a sustentabilidade
+do projeto, ampliando seu alcance, confiabilidade e impacto social. A colaboração
+
+15
+
+entre os diferentes setores da sociedade é essencial para garantir o sucesso do "+
+SAÚDE" como ferramenta de transformação na vida da população idosa.
+3.13
+
+ESTRATÉGIAS DE ABORDAGEM PARA ENGAJAR O PÚBLICO-ALVO
+
+● Criação de conteúdos visuais atrativos (vídeos e banners digitais) voltados
+para a terceira idade, com linguagem simples e empática.
+● Divulgação em redes sociais (Facebook, WhatsApp e Instagram) por meio
+de anúncios segmentados para idosos e familiares.
+● Parcerias com clínicas, hospitais e órgãos públicos para promover o uso
+do aplicativo junto aos seus pacientes idosos.
+● Materiais educativos: vídeos tutoriais dentro do aplicativo, explicando como
+utilizá-lo de maneira prática.
+
+3.14
+
+POSSÍVEIS DESAFIOS E SOLUÇÕES PREVISTAS
+Desafio
+
+Solução Prevista
+
+Dificuldade dos idosos no uso Implementação de tutoriais interativos e leitura por
+inicial
+Resistência
+
+voz no app
+tecnológica
+
+por Campanhas educativas enfatizando os benefícios
+
+parte dos usuários
+
+e segurança do app
+
+Baixa adesão no início
+
+Estratégia de impulsionamento de anúncios
+digitais focados em familiares
+
+Falta de recursos financeiros Estabelecimento de parcerias com instituições
+para expansão
+
+públicas e privadas de saúde
+
+16
+
+REFERÊNCIAS
+
+BRASIL. Ministério da Saúde. Envelhecimento e saúde da pessoa idosa. Brasília: MS,
+2006. (Cadernos de Atenção Básica, n. 19).
+CASTRO, Ana Carolina; MARQUES, Silvia Helena. Inclusão digital na terceira idade:
+desafios e possibilidades. Revista Interfaces Científicas – Educação, Aracaju, v. 4, n.
+2,
+
+p.
+
+105–120,
+
+2016.
+
+Disponível
+
+em:
+
+https://seer.sejesc.est.edu.br/index.php/interfaces/article/view/272. Acesso em: 17
+abr. 2025.
+CORRÊA, Leandro et al. Aplicativos móveis voltados à saúde: uma revisão
+sistemática da literatura. Revista Brasileira de Educação Médica, Brasília, v. 43, n. 1,
+p. 143–151, 2019.
+FERREIRA, Geyse Barbosa et al. A tecnologia como aliada do idoso: contribuições
+para o envelhecimento ativo. Revista Kairós: Gerontologia, São Paulo, v. 23, n. 4, p.
+123–139,
+
+2020.
+
+Disponível
+
+em:
+
+https://revistas.pucsp.br/index.php/kairos/article/view/52418. Acesso em: 17 abr.
+2025.
+MORIGUCHI, Cristiane Sayuri et al. Extensão universitária: uma ferramenta de
+transformação social. Revista Extensão em Foco, v. 4, n. 1, p. 33–42, 2017.
+NBR ISO/IEC 40500:2014. Tecnologia da informação – Requisitos de acessibilidade
+para conteúdo web (WCAG 2.0). Rio de Janeiro: ABNT, 2014.
+
+
