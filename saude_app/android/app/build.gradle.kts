@@ -48,3 +48,4 @@ plugins {
     id("kotlin-android")
     id("com.google.gms.google-services")
 }
+apply(plugin = "com.google.gms.google-services")
