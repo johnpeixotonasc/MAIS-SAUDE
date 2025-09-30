@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddMedicationScreen extends StatefulWidget {
   final String? medicationId;
-  final Map<String, dynamic>? existingMedication;
-  
-  const AddMedicationScreen({
-    Key? key,
-    this.medicationId,
-    this.existingMedication,
-  }) : super(key: key);
+
+  const AddMedicationScreen({Key? key, this.medicationId}) : super(key: key);
 
   @override
   State<AddMedicationScreen> createState() => _AddMedicationScreenState();
@@ -18,315 +13,373 @@ class AddMedicationScreen extends StatefulWidget {
 
 class _AddMedicationScreenState extends State<AddMedicationScreen> {
   final _formKey = GlobalKey<FormState>();
-  final User? user = FirebaseAuth.instance.currentUser;
-  
-  // Controladores dos campos
-  final _nameController = TextEditingController();
-  final _dosageController = TextEditingController();
-  final _doctorController = TextEditingController();
-  final _observationsController = TextEditingController();
-  
-  // Variáveis de estado
-  String _selectedType = 'Comprimido';
-  int _frequency = 1;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dosageController = TextEditingController();
+  final TextEditingController _doctorController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+
+  String? _selectedType;
+  int _selectedFrequency = 1;
   List<TimeOfDay> _selectedTimes = [];
   DateTime? _startDate;
   DateTime? _endDate;
+
   bool _isLoading = false;
-  
-  // Opções de tipos de medicamento
-  final List<String> _medicationTypes = [
-    'Comprimido',
-    'Cápsula',
-    'Líquido',
-    'Xarope',
-    'Injeção',
-    'Pomada',
-    'Creme',
-    'Gotas',
-    'Spray',
-    'Adesivo',
-  ];
+  final User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
-    _initializeFields();
-  }
-
-  void _initializeFields() {
-    if (widget.existingMedication != null) {
-      final medication = widget.existingMedication!;
-      _nameController.text = medication['name'] ?? '';
-      _dosageController.text = medication['dosage'] ?? '';
-      _doctorController.text = medication['doctor'] ?? '';
-      _observationsController.text = medication['observations'] ?? '';
-      _selectedType = medication['type'] ?? 'Comprimido';
-      _frequency = medication['frequency'] ?? 1;
-      
-      // Converter horários salvos para TimeOfDay
-      if (medication['times'] != null) {
-        _selectedTimes = (medication['times'] as List<dynamic>)
-            .map((time) => _parseTimeString(time.toString()))
-            .toList();
-      }
-      
-      // Converter datas
-      if (medication['startDate'] != null) {
-        _startDate = (medication['startDate'] as Timestamp).toDate();
-      }
-      if (medication['endDate'] != null) {
-        _endDate = (medication['endDate'] as Timestamp).toDate();
-      }
+    if (widget.medicationId != null) {
+      _loadMedicationData();
     } else {
-      // Configurar horários padrão baseado na frequência
-      _updateDefaultTimes();
+      _setInitialTimes();
     }
   }
 
-  TimeOfDay _parseTimeString(String timeString) {
-    final parts = timeString.split(':');
-    return TimeOfDay(
-      hour: int.parse(parts[0]),
-      minute: int.parse(parts[1]),
-    );
+  void _setInitialTimes() {
+    _selectedTimes = _generateDefaultTimes(_selectedFrequency);
   }
 
-  void _updateDefaultTimes() {
-    _selectedTimes.clear();
-    switch (_frequency) {
+  List<TimeOfDay> _generateDefaultTimes(int frequency) {
+    switch (frequency) {
       case 1:
-        _selectedTimes.add(const TimeOfDay(hour: 8, minute: 0));
-        break;
+        return [const TimeOfDay(hour: 8, minute: 0)];
       case 2:
-        _selectedTimes.addAll([
+        return [
           const TimeOfDay(hour: 8, minute: 0),
-          const TimeOfDay(hour: 20, minute: 0),
-        ]);
-        break;
+          const TimeOfDay(hour: 20, minute: 0)
+        ];
       case 3:
-        _selectedTimes.addAll([
+        return [
           const TimeOfDay(hour: 8, minute: 0),
           const TimeOfDay(hour: 14, minute: 0),
-          const TimeOfDay(hour: 20, minute: 0),
-        ]);
-        break;
+          const TimeOfDay(hour: 20, minute: 0)
+        ];
       case 4:
-        _selectedTimes.addAll([
+        return [
           const TimeOfDay(hour: 8, minute: 0),
           const TimeOfDay(hour: 12, minute: 0),
           const TimeOfDay(hour: 16, minute: 0),
-          const TimeOfDay(hour: 20, minute: 0),
-        ]);
-        break;
+          const TimeOfDay(hour: 20, minute: 0)
+        ];
+      default:
+        return [];
     }
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _dosageController.dispose();
-    _doctorController.dispose();
-    _observationsController.dispose();
-    super.dispose();
+  Future<void> _loadMedicationData() async {
+    if (user == null) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .collection('medications')
+          .doc(widget.medicationId)
+          .get();
+
+      if (doc.exists) {
+        final data = doc.data()!;
+        _nameController.text = data['name'] ?? '';
+        _dosageController.text = data['dosage'] ?? '';
+        _doctorController.text = data['doctor'] ?? '';
+        _notesController.text = data['notes'] ?? '';
+        _selectedType = data['type'];
+        _selectedFrequency = data['frequency'] ?? 1;
+        _startDate = (data['startDate'] as Timestamp?)?.toDate();
+        _endDate = (data['endDate'] as Timestamp?)?.toDate();
+
+        final List<dynamic> timesData = data['times'] ?? [];
+        _selectedTimes = timesData.map((timeStr) {
+          final parts = timeStr.split(':');
+          return TimeOfDay(
+              hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+        }).toList();
+        _sortTimes();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao carregar medicamento: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _sortTimes() {
+    _selectedTimes.sort((a, b) {
+      final aMinutes = a.hour * 60 + a.minute;
+      final bMinutes = b.hour * 60 + b.minute;
+      return aMinutes.compareTo(bMinutes);
+    });
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && !_selectedTimes.contains(picked)) {
+      setState(() {
+        _selectedTimes.add(picked);
+        _sortTimes();
+      });
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context, bool isStartDate) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStartDate) {
+          _startDate = picked;
+          if (_endDate != null && _startDate!.isAfter(_endDate!)) {
+            _endDate =
+                _startDate; // Ajusta a data final se for anterior à inicial
+          }
+        } else {
+          _endDate = picked;
+          if (_startDate != null && _endDate!.isBefore(_startDate!)) {
+            _startDate =
+                _endDate; // Ajusta a data inicial se for posterior à final
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> _saveMedication() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    if (_selectedTimes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'Por favor, adicione pelo menos um horário para o medicamento.')),
+      );
+      return;
+    }
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não logado.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final medicationData = {
+        'name': _nameController.text,
+        'dosage': _dosageController.text,
+        'type': _selectedType,
+        'doctor': _doctorController.text,
+        'notes': _notesController.text,
+        'frequency': _selectedFrequency,
+        'times': _selectedTimes
+            .map((e) =>
+                '${e.hour.toString().padLeft(2, '0')}:${e.minute.toString().padLeft(2, '0')}')
+            .toList(),
+        'startDate':
+            _startDate != null ? Timestamp.fromDate(_startDate!) : null,
+        'endDate': _endDate != null ? Timestamp.fromDate(_endDate!) : null,
+        'createdAt': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      if (widget.medicationId == null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .collection('medications')
+            .add(medicationData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Medicamento adicionado com sucesso!'),
+              backgroundColor: Colors.green),
+        );
+      } else {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .collection('medications')
+            .doc(widget.medicationId)
+            .update(medicationData);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Medicamento atualizado com sucesso!'),
+              backgroundColor: Colors.green),
+        );
+      }
+      Navigator.of(context).pop();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao salvar medicamento: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = widget.medicationId != null;
-    
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: Text(
-          isEditing ? 'Editar Medicamento' : 'Adicionar Medicamento',
+          widget.medicationId == null
+              ? 'Adicionar Medicamento'
+              : 'Editar Medicamento',
           style: const TextStyle(
-            fontSize: 22,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.green.shade700,
-        foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Nome do medicamento
-                _buildSectionTitle('Nome do Medicamento'),
-                _buildTextField(
-                  controller: _nameController,
-                  label: 'Nome do medicamento',
-                  hint: 'Ex: Paracetamol, Losartana...',
-                  icon: Icons.medication,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, digite o nome do medicamento';
-                    }
-                    return null;
-                  },
-                ),
-                
-                const SizedBox(height: 24),
-                
-                // Tipo e Dosagem
-                _buildSectionTitle('Tipo e Dosagem'),
-                Row(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 2,
-                      child: _buildDropdownField(),
+                    _buildTextField(
+                      controller: _nameController,
+                      label: 'Nome do Medicamento',
+                      hint: 'Ex: Dorflex, Amoxicilina',
+                      icon: Icons.medication,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira o nome do medicamento.';
+                        }
+                        return null;
+                      },
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      flex: 3,
-                      child: _buildTextField(
-                        controller: _dosageController,
-                        label: 'Dosagem',
-                        hint: 'Ex: 500mg, 10ml...',
-                        icon: Icons.straighten,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Digite a dosagem';
-                          }
-                          return null;
-                        },
-                      ),
+                    const SizedBox(height: 20),
+                    _buildDropdownField(
+                      label: 'Tipo de Medicamento',
+                      value: _selectedType,
+                      items: const [
+                        'Comprimido',
+                        'Cápsula',
+                        'Líquido',
+                        'Xarope',
+                        'Injeção',
+                        'Pomada',
+                        'Creme',
+                        'Gotas',
+                        'Spray',
+                        'Adesivo',
+                      ],
+                      icon: Icons.category,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedType = value;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, selecione o tipo de medicamento.';
+                        }
+                        return null;
+                      },
                     ),
-                  ],
-                ),
-                
-                const SizedBox(height: 24),
-                
-                // Frequência
-                _buildSectionTitle('Frequência de Uso'),
-                _buildFrequencySelector(),
-                
-                const SizedBox(height: 24),
-                
-                // Horários
-                _buildSectionTitle('Horários de Tomada'),
-                _buildTimesSection(),
-                
-                const SizedBox(height: 24),
-                
-                // Período de tratamento
-                _buildSectionTitle('Período de Tratamento'),
-                _buildDateSection(),
-                
-                const SizedBox(height: 24),
-                
-                // Médico responsável
-                _buildSectionTitle('Médico Responsável (Opcional)'),
-                _buildTextField(
-                  controller: _doctorController,
-                  label: 'Nome do médico',
-                  hint: 'Dr. João Silva...',
-                  icon: Icons.person,
-                ),
-                
-                const SizedBox(height: 24),
-                
-                // Observações
-                _buildSectionTitle('Observações (Opcional)'),
-                _buildTextField(
-                  controller: _observationsController,
-                  label: 'Observações',
-                  hint: 'Tomar com alimentos, efeitos colaterais...',
-                  icon: Icons.note,
-                  maxLines: 3,
-                ),
-                
-                const SizedBox(height: 32),
-                
-                // Botões de ação
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.grey.shade700,
-                          side: BorderSide(color: Colors.grey.shade400, width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                      controller: _dosageController,
+                      label: 'Dosagem',
+                      hint: 'Ex: 500mg, 10ml, 1 comprimido',
+                      icon: Icons.science,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor, insira a dosagem.';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                      controller: _doctorController,
+                      label: 'Médico Responsável (Opcional)',
+                      hint: 'Ex: Dr. João Silva',
+                      icon: Icons.person,
+                    ),
+                    const SizedBox(height: 20),
+                    _buildTextField(
+                      controller: _notesController,
+                      label: 'Observações (Opcional)',
+                      hint: 'Ex: Tomar após as refeições',
+                      icon: Icons.notes,
+                      maxLines: 3,
+                    ),
+                    const SizedBox(height: 20),
+                    _buildFrequencySection(),
+                    const SizedBox(height: 20),
+                    _buildTimesSection(),
+                    const SizedBox(height: 20),
+                    _buildDateSelectionSection(),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 60,
+                      child: ElevatedButton.icon(
+                        onPressed: _saveMedication,
+                        icon: const Icon(Icons.save, size: 28),
+                        label: Text(
+                          widget.medicationId == null
+                              ? 'Salvar Medicamento'
+                              : 'Atualizar Medicamento',
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        child: const Text(
-                          'Cancelar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _saveMedication,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green.shade700,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: _isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : Text(
-                                isEditing ? 'Atualizar' : 'Salvar',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                       ),
                     ),
                   ],
                 ),
-                
-                const SizedBox(height: 16),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.green.shade700,
-        ),
-      ),
     );
   }
 
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-    required String hint,
+    String? hint,
     required IconData icon,
     String? Function(String?)? validator,
     int maxLines = 1,
@@ -334,162 +387,244 @@ class _AddMedicationScreenState extends State<AddMedicationScreen> {
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
-      style: const TextStyle(fontSize: 18),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(fontSize: 16),
         hintText: hint,
-        hintStyle: const TextStyle(fontSize: 16),
-        prefixIcon: Icon(icon, size: 24),
+        prefixIcon: Icon(icon, size: 28, color: Colors.green.shade700),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(width: 2),
+          borderSide: BorderSide(color: Colors.green.shade700, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade400, width: 2),
+          borderSide: BorderSide(color: Colors.green.shade400, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.green.shade700, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
-        ),
-        filled: true,
-        fillColor: Colors.white,
+        labelStyle: TextStyle(fontSize: 18, color: Colors.green.shade700),
+        hintStyle: const TextStyle(fontSize: 16, color: Colors.grey),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       ),
+      style: const TextStyle(fontSize: 18),
       validator: validator,
     );
   }
 
-  Widget _buildDropdownField() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade400, width: 2),
-      ),
-      child: DropdownButtonFormField<String>(
-        value: _selectedType,
-        decoration: const InputDecoration(
-          labelText: 'Tipo',
-          labelStyle: TextStyle(fontSize: 16),
-          prefixIcon: Icon(Icons.category, size: 24),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+  Widget _buildDropdownField({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required IconData icon,
+    required ValueChanged<String?> onChanged,
+    String? Function(String?)? validator,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, size: 28, color: Colors.green.shade700),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.green.shade700, width: 2),
         ),
-        style: const TextStyle(fontSize: 18, color: Colors.black),
-        items: _medicationTypes.map((type) {
-          return DropdownMenuItem(
-            value: type,
-            child: Text(type),
-          );
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            _selectedType = value!;
-          });
-        },
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.green.shade400, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.green.shade700, width: 2),
+        ),
+        labelStyle: TextStyle(fontSize: 18, color: Colors.green.shade700),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       ),
+      items: items.map((String item) {
+        return DropdownMenuItem(
+          value: item,
+          child: Text(item, style: const TextStyle(fontSize: 18)),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      validator: validator,
+      style: const TextStyle(fontSize: 18, color: Colors.black),
+      icon: Icon(Icons.arrow_drop_down, size: 32, color: Colors.green.shade700),
+      isExpanded: true,
     );
   }
 
-  Widget _buildFrequencySelector() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade400, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Quantas vezes por dia?',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [1, 2, 3, 4].map((freq) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _frequency = freq;
-                        _updateDefaultTimes();
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: _frequency == freq
-                            ? Colors.green.shade700
-                            : Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: _frequency == freq
-                              ? Colors.green.shade700
-                              : Colors.grey.shade300,
-                          width: 2,
-                        ),
-                      ),
-                      child: Text(
-                        '${freq}x',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: _frequency == freq
-                              ? Colors.white
-                              : Colors.grey.shade700,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+  Widget _buildFrequencySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Frequência (vezes ao dia)',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.green.shade700),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(4, (index) {
+            final freq = index + 1;
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _selectedFrequency = freq;
+                      _selectedTimes = _generateDefaultTimes(freq);
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _selectedFrequency == freq
+                        ? Colors.green.shade700
+                        : Colors.green.shade100,
+                    foregroundColor: _selectedFrequency == freq
+                        ? Colors.white
+                        : Colors.green.shade700,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    textStyle: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
+                  child: Text('$freq x'),
                 ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 
   Widget _buildTimesSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade400, width: 2),
-      ),
-      child: Column(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Horários de Tomada',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.green.shade700),
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: _selectedTimes.map((time) {
+            return Chip(
+              label: Text(time.format(context),
+                  style: const TextStyle(fontSize: 16, color: Colors.white)),
+              backgroundColor: Colors.green.shade500,
+              deleteIcon:
+                  const Icon(Icons.close, size: 18, color: Colors.white),
+              onDeleted: () {
+                setState(() {
+                  _selectedTimes.remove(time);
+                });
+              },
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () => _selectTime(context),
+            icon: Icon(Icons.add_alarm, size: 28, color: Colors.green.shade700),
+            label: Text('Adicionar Horário',
+                style: TextStyle(fontSize: 18, color: Colors.green.shade700)),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              side: BorderSide(color: Colors.green.shade700, width: 2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateSelectionSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Período de Tratamento',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.green.shade700),
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _buildDateButton(
+                label: 'Data de Início',
+                date: _startDate,
+                onPressed: () => _selectDate(context, true),
+                icon: Icons.calendar_today,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildDateButton(
+                label: 'Data de Fim (Opcional)',
+                date: _endDate,
+                onPressed: () => _selectDate(context, false),
+                icon: Icons.event_busy,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDateButton({
+    required String label,
+    required DateTime? date,
+    required VoidCallback onPressed,
+    required IconData icon,
+  }) {
+    return OutlinedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon, size: 28, color: Colors.green.shade700),
+      label: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Horários definidos:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              ),
-              TextButton.icon(
-                onPressed: _addTime,
-                icon: const Icon(Icons.add, size: 20),
-                label: const Text('Adicionar'),
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.green.shade700,
-                ),
-              ),
-            ],
+          Text(label, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+          Text(
+            date == null
+                ? 'Selecionar Data'
+                : '${date.day}/${date.month}/${date.year}',
+            style: TextStyle(
+                fontSize: 18,
+                color: Colors.green.shade700,
+                fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 8),
-          if (_selectedTimes.isEmpty)
-            const Text(
-   
-(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
+        ],
+      ),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        side: BorderSide(color: Colors.green.shade700, width: 2),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+}
